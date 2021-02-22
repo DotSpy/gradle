@@ -554,7 +554,7 @@ class PrecompiledGroovyPluginsIntegrationTest extends AbstractIntegrationSpec {
             plugins {
                 id 'groovy-gradle-plugin'
             }
-            ${jcenterRepository()}
+            ${mavenCentralRepository()}
 
             dependencies {
                 implementation("org.apache.commons:commons-lang3:3.4")
@@ -731,7 +731,7 @@ class PrecompiledGroovyPluginsIntegrationTest extends AbstractIntegrationSpec {
             }
             ${mavenCentralRepository()}
             dependencies {
-                testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
+                testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-3.0'
             }
         """
 

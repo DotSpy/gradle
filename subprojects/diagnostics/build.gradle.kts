@@ -16,8 +16,8 @@ dependencies {
     implementation(project(":base-services-groovy"))
     implementation(project(":build-option"))
 
-    implementation(libs.slf4jApi)
     implementation(libs.groovy)
+    implementation(libs.groovyJson)
     implementation(libs.guava)
     implementation(libs.commonsLang)
     implementation(libs.inject)

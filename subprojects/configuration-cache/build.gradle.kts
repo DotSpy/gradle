@@ -22,12 +22,6 @@ tasks.configCacheIntegTest {
     enabled = false
 }
 
-// This is a workaround for the validate plugins task trying to inspect classes which have changed but are NOT tasks.
-// For the current project, we simply disable it since there are no tasks in there.
-tasks.withType<ValidatePlugins>().configureEach {
-    enabled = false
-}
-
 dependencies {
     implementation(project(":base-services"))
     implementation(project(":base-services-groovy"))
@@ -60,6 +54,7 @@ dependencies {
     implementation(project(":build-option"))
 
     implementation(libs.groovy)
+    implementation(libs.groovyJson)
     implementation(libs.slf4jApi)
     implementation(libs.guava)
 

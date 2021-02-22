@@ -15,8 +15,6 @@ dependencies {
     implementation(libs.groovy)
     implementation(libs.guava)
     implementation(libs.commonsIo)
-    implementation(libs.commonsLang)
-    implementation(libs.inject)
 
     testImplementation(project(":process-services"))
     testImplementation(project(":resources"))
@@ -24,6 +22,7 @@ dependencies {
     testImplementation(testFixtures(project(":core")))
     testImplementation(testFixtures(project(":core-api")))
     testImplementation(testFixtures(project(":model-core")))
+    testImplementation(libs.groovyDateUtil)
 
     testFixturesImplementation(project(":base-services"))
     testFixturesImplementation(project(":core-api"))

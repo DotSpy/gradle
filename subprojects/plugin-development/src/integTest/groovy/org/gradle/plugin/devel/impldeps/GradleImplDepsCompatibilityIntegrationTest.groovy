@@ -107,8 +107,9 @@ class GradleImplDepsCompatibilityIntegrationTest extends BaseGradleImplDepsInteg
     def "Gradle API and TestKit are compatible regardless of order #dependencyPermutations"() {
         when:
         buildFile << applyGroovyPlugin()
-        buildFile << jcenterRepository()
+        buildFile << mavenCentralRepository()
         buildFile << spockDependency()
+        buildFile << junitDependency()
         buildFile << """
             repositories {
                 maven { url '${buildContext.localRepository.toURI().toURL()}' }

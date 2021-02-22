@@ -16,17 +16,15 @@
 
 package promotion
 
-import common.Branch
+import common.VersionedSettingsBranch
 import jetbrains.buildServer.configs.kotlin.v2019_2.ParameterDisplay
 
 abstract class PublishRelease(
     task: String,
     requiredConfirmationCode: String,
-    versionSettingsBranch: Branch = Branch.Release,
-    promotedBranch: String = "release",
+    promotedBranch: String,
     init: PublishRelease.() -> Unit = {}
 ) : PublishGradleDistribution(
-    versionSettingsBranch = versionSettingsBranch,
     promotedBranch = promotedBranch,
     task = task,
     triggerName = "ReadyforRelease",
@@ -61,25 +59,28 @@ abstract class PublishRelease(
                 allowEmpty = true
             )
         }
+
+        cleanup {
+            history(days = 180)
+        }
+
         this.init()
     }
 }
 
-class PublishFinalRelease(branch: Branch) : PublishRelease(
-    versionSettingsBranch = branch,
-    promotedBranch = branch.name.toLowerCase(),
+class PublishFinalRelease(branch: VersionedSettingsBranch) : PublishRelease(
+    promotedBranch = branch.branchName,
     task = "promoteFinalRelease",
     requiredConfirmationCode = "final",
     init = {
-        id("Gradle_Promotion_FinalRelease")
+        id("Promotion_FinalRelease")
         name = "Release - Final"
         description = "Promotes the latest successful change on 'release' as a new release"
     }
 )
 
-class PublishReleaseCandidate(branch: Branch) : PublishRelease(
-    versionSettingsBranch = branch,
-    promotedBranch = branch.name.toLowerCase(),
+class PublishReleaseCandidate(branch: VersionedSettingsBranch) : PublishRelease(
+    promotedBranch = branch.branchName,
     task = "promoteRc",
     requiredConfirmationCode = "rc",
     init = {
@@ -89,9 +90,8 @@ class PublishReleaseCandidate(branch: Branch) : PublishRelease(
     }
 )
 
-class PublishMilestone(branch: Branch) : PublishRelease(
-    versionSettingsBranch = branch,
-    promotedBranch = branch.name.toLowerCase(),
+class PublishMilestone(branch: VersionedSettingsBranch) : PublishRelease(
+    promotedBranch = branch.branchName,
     task = "promoteMilestone",
     requiredConfirmationCode = "milestone",
     init = {

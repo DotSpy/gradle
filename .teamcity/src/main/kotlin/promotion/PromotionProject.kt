@@ -1,24 +1,25 @@
 package promotion
 
-import common.Branch
+import common.VersionedSettingsBranch
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
 
-class PromotionProject(branch: Branch) : Project({
+class PromotionProject(branch: VersionedSettingsBranch) : Project({
     id("Promotion")
     name = "Promotion"
 
     buildType(SanityCheck)
     buildType(PublishNightlySnapshot(branch))
     buildType(PublishNightlySnapshotFromQuickFeedback(branch))
-    if (branch == Branch.Master) {
-        buildType(PublishBranchSnapshotFromQuickFeedback)
+    buildType(PublishBranchSnapshotFromQuickFeedback)
+    buildType(PublishMilestone(branch))
+
+    if (branch == VersionedSettingsBranch.MASTER) {
         buildType(StartReleaseCycle)
         buildType(StartReleaseCycleTest)
+    } else {
+        buildType(PublishReleaseCandidate(branch))
+        buildType(PublishFinalRelease(branch))
     }
-
-    buildType(PublishMilestone(branch))
-    buildType(PublishReleaseCandidate(branch))
-    buildType(PublishFinalRelease(branch))
 
     params {
         password("env.ORG_GRADLE_PROJECT_gradleS3SecretKey", "%gradleS3SecretKey%")

@@ -19,10 +19,11 @@ package org.gradle.smoketests
 import org.gradle.integtests.fixtures.ToBeFixedForConfigurationCache
 import org.gradle.util.Requires
 import org.gradle.util.TestPrecondition
+import spock.lang.Ignore
 import spock.lang.Issue
 import spock.lang.Unroll
 
-import static org.gradle.internal.reflect.TypeValidationContext.Severity.WARNING
+import static org.gradle.internal.reflect.validation.Severity.WARNING
 
 class NebulaPluginsSmokeTest extends AbstractPluginValidatingSmokeTest {
 
@@ -36,7 +37,7 @@ class NebulaPluginsSmokeTest extends AbstractPluginValidatingSmokeTest {
                 id "nebula.dependency-recommender" version "${TestedVersions.nebulaDependencyRecommender}"
             }
 
-            ${jcenterRepository()}
+            ${mavenCentralRepository()}
 
             dependencyRecommendations {
                 mavenBom module: 'netflix:platform:latest.release'
@@ -77,13 +78,14 @@ class NebulaPluginsSmokeTest extends AbstractPluginValidatingSmokeTest {
         runner('groovydoc').build()
     }
 
+    @Ignore("TODO: BM Part of groovy 3 upgrade")
     @Issue('https://plugins.gradle.org/plugin/nebula.lint')
     @ToBeFixedForConfigurationCache
     def 'nebula lint plugin'() {
         given:
         buildFile << """
             buildscript {
-                ${jcenterRepository()}
+                ${mavenCentralRepository()}
             }
 
             plugins {
@@ -103,7 +105,7 @@ class NebulaPluginsSmokeTest extends AbstractPluginValidatingSmokeTest {
         def result = runner('autoLintGradle').build()
 
         then:
-        int numOfRepoBlockLines = 14 + jcenterRepository().readLines().size()
+        int numOfRepoBlockLines = 14 + mavenCentralRepository().readLines().size()
         result.output.contains("parentheses are unnecessary for dependencies")
         result.output.contains("warning   dependency-parentheses")
         result.output.contains("build.gradle:$numOfRepoBlockLines")
@@ -145,7 +147,7 @@ testImplementation('junit:junit:4.7')""")
                 id 'nebula.dependency-lock' version '$version'
             }
 
-            ${jcenterRepository()}
+            ${mavenCentralRepository()}
 
             dependencies {
                 api 'org.apache.commons:commons-math3:3.6.1'
@@ -223,7 +225,7 @@ testImplementation('junit:junit:4.7')""")
                 id 'nebula.resolution-rules' version '${TestedVersions.nebulaResolutionRules}'
             }
 
-            ${jcenterRepository()}
+            ${mavenCentralRepository()}
 
             dependencies {
                 resolutionRules files('rules.json')

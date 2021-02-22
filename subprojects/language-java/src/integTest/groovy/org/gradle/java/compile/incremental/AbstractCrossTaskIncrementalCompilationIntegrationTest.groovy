@@ -460,7 +460,7 @@ abstract class AbstractCrossTaskIncrementalCompilationIntegrationTest extends Ab
         given:
         buildFile << """
             project(':impl') {
-                ${jcenterRepository()}
+                ${mavenCentralRepository()}
                 dependencies { implementation 'org.apache.commons:commons-lang3:3.3' }
             }
         """
@@ -604,7 +604,7 @@ abstract class AbstractCrossTaskIncrementalCompilationIntegrationTest extends Ab
                 def classpathTxt = file("classpath.txt")
                 doFirst {
                     classpathTxt.createNewFile();
-                    classpathTxt.text = classpath.files*.name.findAll { !it.startsWith('groovy') }.join(', ')
+                    classpathTxt.text = classpath.files*.name.findAll { !it.startsWith('groovy') && !it.startsWith('javaparser-core') }.join(', ')
                 }
             }
         """

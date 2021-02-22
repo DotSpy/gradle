@@ -92,7 +92,7 @@ public abstract class JvmProjectInitDescriptor extends LanguageLibraryProjectIni
     @Override
     public void generateProjectBuildScript(String projectName, InitSettings settings, BuildScriptBuilder buildScriptBuilder) {
         if (isSingleProject(settings)) {
-            addJcenter(buildScriptBuilder);
+            addMavenCentral(buildScriptBuilder);
             String languagePlugin = description.getPluginName();
             if (languagePlugin != null) {
                 String pluginVersionProperty = description.getPluginVersionProperty();
@@ -112,7 +112,7 @@ public abstract class JvmProjectInitDescriptor extends LanguageLibraryProjectIni
     @Override
     public void generateConventionPluginBuildScript(String conventionPluginName, InitSettings settings, BuildScriptBuilder buildScriptBuilder) {
         if ("common".equals(conventionPluginName)) {
-            addJcenter(buildScriptBuilder);
+            addMavenCentral(buildScriptBuilder);
             String languagePlugin = description.getPluginName() == null ? "java" : description.getPluginName();
             buildScriptBuilder.plugin("Apply the " + languagePlugin + " Plugin to add support for " + getLanguage() + ".", languagePlugin);
             addStandardDependencies(buildScriptBuilder, true);
@@ -171,8 +171,8 @@ public abstract class JvmProjectInitDescriptor extends LanguageLibraryProjectIni
             "java-library");
     }
 
-    private void addJcenter(BuildScriptBuilder buildScriptBuilder) {
-        buildScriptBuilder.repositories().jcenter("Use JCenter for resolving dependencies.");
+    private void addMavenCentral(BuildScriptBuilder buildScriptBuilder) {
+        buildScriptBuilder.repositories().mavenCentral("Use Maven Central for resolving dependencies.");
     }
 
     private void addStandardDependencies(BuildScriptBuilder buildScriptBuilder, boolean constraintsDefined) {
@@ -217,11 +217,15 @@ public abstract class JvmProjectInitDescriptor extends LanguageLibraryProjectIni
                     buildScriptBuilder
                         .plugin("Apply the groovy plugin to also add support for Groovy (needed for Spock)", "groovy")
                         .testImplementationDependency("Use the latest Groovy version for Spock testing",
-                            "org.codehaus.groovy:groovy-all:" + libraryVersionProvider.getVersion("groovy"));
+                            "org.codehaus.groovy:groovy:" + libraryVersionProvider.getVersion("groovy"));
                 }
-                buildScriptBuilder.testImplementationDependency("Use the awesome Spock testing and specification framework even with Java",
+                buildScriptBuilder
+                    .testImplementationDependency("Use the awesome Spock testing and specification framework even with Java",
                         "org.spockframework:spock-core:" + libraryVersionProvider.getVersion("spock"),
-                        "junit:junit:" + libraryVersionProvider.getVersion("junit"));
+                        "junit:junit:" + libraryVersionProvider.getVersion("junit"))
+                    .taskMethodInvocation(
+                "Use junit platform for unit tests.",
+                "test", "Test", "useJUnitPlatform");
                 break;
             case TESTNG:
                 buildScriptBuilder

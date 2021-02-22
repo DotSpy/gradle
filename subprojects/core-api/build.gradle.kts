@@ -11,11 +11,10 @@ dependencies {
     implementation(project(":process-services"))
     implementation(project(":resources"))
 
-    implementation(libs.slf4jApi)
     implementation(libs.groovy)
+    implementation(libs.groovyAnt)
     implementation(libs.ant)
     implementation(libs.guava)
-    implementation(libs.commonsIo)
     implementation(libs.commonsLang)
     implementation(libs.inject)
 

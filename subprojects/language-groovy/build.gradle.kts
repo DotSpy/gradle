@@ -20,8 +20,9 @@ dependencies {
     implementation(project(":language-java"))
     implementation(project(":files"))
 
-    implementation(libs.slf4jApi)
     implementation(libs.groovy)
+    implementation(libs.groovyAnt)
+    implementation(libs.groovyDoc)
     implementation(libs.guava)
     implementation(libs.asm)
     implementation(libs.inject)
@@ -36,6 +37,9 @@ dependencies {
     testFixturesImplementation(project(":base-services"))
 
     integTestImplementation(libs.commonsLang)
+    integTestImplementation(libs.javaParser) {
+        because("The Groovy docs inspects the dependencies at compile time")
+    }
 
     testRuntimeOnly(project(":distributions-core")) {
         because("Tests instantiate DefaultClassLoaderRegistry which requires a 'gradle-plugins.properties' through DefaultPluginModuleRegistry")

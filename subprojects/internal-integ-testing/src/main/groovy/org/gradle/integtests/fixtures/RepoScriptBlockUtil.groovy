@@ -69,25 +69,27 @@ class RepoScriptBlockUtil {
 
         String originalUrl
         String mirrorUrl
-        String name
         String type
 
         private MirroredRepository(String originalUrl, String mirrorUrl, String type) {
             this.originalUrl = originalUrl
             this.mirrorUrl = mirrorUrl ?: originalUrl
-            this.name = mirrorUrl ? name() + "_MIRROR" : name()
             this.type = type
         }
 
         String getRepositoryDefinition(GradleDsl dsl = GROOVY) {
-            repositoryDefinition(dsl, type, name, mirrorUrl)
+            repositoryDefinition(dsl, type, getName(), mirrorUrl)
         }
 
         void configure(RepositoryHandler repositories) {
             repositories.maven { MavenArtifactRepository repo ->
-                repo.name = name
+                repo.name = getName()
                 repo.url = mirrorUrl
             }
+        }
+
+        String getName() {
+            return mirrorUrl ? name() + "_MIRROR" : name()
         }
     }
 
@@ -102,8 +104,8 @@ class RepoScriptBlockUtil {
         """
     }
 
-    static void configureJcenter(RepositoryHandler repositories) {
-        MirroredRepository.JCENTER.configure(repositories)
+    static void configureMavenCentral(RepositoryHandler repositories) {
+        MirroredRepository.MAVEN_CENTRAL.configure(repositories)
     }
 
     static String mavenCentralRepository(GradleDsl dsl = GROOVY) {
@@ -120,15 +122,6 @@ class RepoScriptBlockUtil {
                 ${googleRepositoryDefinition(dsl)}
             }
         """
-    }
-
-    static String mavenCentralRepositoryMirrorUrl() {
-        def url = MirroredRepository.MAVEN_CENTRAL.mirrorUrl
-        if (url.endsWith('/')) {
-            url
-        } else {
-            url + '/'
-        }
     }
 
     static String kotlinxRepositoryDefinition(GradleDsl dsl = GROOVY) {

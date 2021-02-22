@@ -18,6 +18,7 @@ package org.gradle.buildinit.plugins.internal;
 
 import org.apache.commons.lang.StringUtils;
 import org.gradle.api.internal.DocumentationRegistry;
+import org.gradle.buildinit.plugins.internal.modifiers.BuildInitTestFramework;
 import org.gradle.buildinit.plugins.internal.modifiers.ComponentType;
 import org.gradle.util.GUtil;
 
@@ -42,7 +43,7 @@ public abstract class JvmGradlePluginProjectInitDescriptor extends LanguageLibra
 
     @Override
     public void generateProjectBuildScript(String projectName, InitSettings settings, BuildScriptBuilder buildScriptBuilder) {
-        buildScriptBuilder.repositories().jcenter("Use JCenter for resolving dependencies.");
+        buildScriptBuilder.repositories().mavenCentral("Use Maven Central for resolving dependencies.");
 
         String pluginId = settings.getPackageName() + ".greeting";
         String pluginClassName = StringUtils.capitalize(GUtil.toCamelCase(settings.getProjectName())) + "Plugin";
@@ -67,8 +68,14 @@ public abstract class JvmGradlePluginProjectInitDescriptor extends LanguageLibra
         BuildScriptBuilder.Expression functionalTest = buildScriptBuilder.taskRegistration("Add a task to run the functional tests", "functionalTest", "Test", b -> {
             b.propertyAssignment(null, "testClassesDirs", buildScriptBuilder.propertyExpression(functionalTestSourceSet, "output.classesDirs"), true);
             b.propertyAssignment(null, "classpath", buildScriptBuilder.propertyExpression(functionalTestSourceSet, "runtimeClasspath"), true);
+            if(getTestFrameworks().contains(BuildInitTestFramework.SPOCK)) {
+                b.methodInvocation(null, "useJUnitPlatform");
+            }
         });
         buildScriptBuilder.taskMethodInvocation("Run the functional tests as part of `check`", "check", "Task", "dependsOn", functionalTest);
+        if(getTestFrameworks().contains(BuildInitTestFramework.SPOCK)) {
+            buildScriptBuilder.taskMethodInvocation("Use junit platform for unit tests.", "test", "Test", "useJUnitPlatform");
+        }
     }
 
     @Override

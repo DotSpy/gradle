@@ -1335,7 +1335,7 @@ All of them match the consumer attributes:
                 }
                 task checkRelease(dependsOn: configurations._compileFreeRelease) {
                     doLast {
-                       assert configurations._compileFreeRelease.collect { it.name } == ['b-bar.jar', , 'c-bar.jar']
+                       assert configurations._compileFreeRelease.collect { it.name } == ['b-bar.jar', 'c-bar.jar']
                     }
                 }
             }
@@ -1436,7 +1436,7 @@ The following variants were also considered but didn't match the requested attri
             }
 
             project(':a') {
-                ${jcenterRepository()}
+                ${mavenCentralRepository()}
 
                 configurations {
                     _compileFreeDebug.attributes { $freeDebug }
@@ -1470,7 +1470,7 @@ The following variants were also considered but didn't match the requested attri
                 }
             }
             project(':c') {
-                ${jcenterRepository()}
+                ${mavenCentralRepository()}
                 configurations {
                     foo.attributes { $freeDebug }
                     bar.attributes { $freeRelease }

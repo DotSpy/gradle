@@ -59,6 +59,7 @@ public class PackageListGenerator extends DefaultTask {
         "groovyjarjarantlr",
         "net/rubygrapefruit",
         "org/codehaus/groovy",
+        "org/apache/groovy",
         "org/apache/tools/ant",
         "org/apache/commons/logging",
         "org/slf4j",
@@ -118,7 +119,7 @@ public class PackageListGenerator extends DefaultTask {
                     @Override
                     public void doExecute(String s) throws Exception {
                         bufferedWriter.write(s);
-                        bufferedWriter.newLine();
+                        bufferedWriter.write('\n');
                     }
                 });
             }
